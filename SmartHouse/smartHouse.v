@@ -1,19 +1,20 @@
 module smart_house_function (
-clock,
-reset,
-music_req,
-light_req,
-curtain_req,
-temp_req,
-char_req,
+    input clock,
+    input reset,
+    input music_req,
+    input light_req,
+    input curtain_req,
+    input [31:0]temp_req,
+    input [7:0]char_req,
+    output reg music,
+    output reg curtain,
+    output reg light,
+    output reg window,
+    output reg cooler,
+    output reg heater
 );
 
-input   clock, reset, isday, ring_req, music_req, light_req, curtain_req;
-integer temp_req;
-input   string char_req;
-output  music, curtain, light, window, cooler, heater;
-wire    clock, reset, music_req, light_req, curtain_req, temp_req;
-reg     music, curtain, light, window;
+reg isday, ring_req;
 
 parameter SIZE  = 20;
 parameter IDLE  = 5'b00001;
@@ -113,7 +114,7 @@ else
             heater <= 1;
             state <= #1 Q9;
          end
-    Q9 : if (char_req == "o") 
+    Q9 : if (char_req == 8'h6F) // o
             begin
                 state <= #1 Q10;
             end
@@ -121,7 +122,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q10 : if (char_req == "p") 
+    Q10 : if (char_req == 8'h70) // p 
             begin
                 state <= #1 Q11;
             end
@@ -129,7 +130,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q11 : if (char_req == "e") 
+    Q11 : if (char_req == 8'h65) // e 
             begin
                 state <= #1 Q12;
             end
@@ -137,7 +138,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q12 : if (char_req == "n") 
+    Q12 : if (char_req == 8'h6E) // n
             begin
                 state <= #1 Q13;
             end
@@ -145,7 +146,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q13 : if (char_req == "w") 
+    Q13 : if (char_req == 8'h77) // w 
             begin
                 state <= #1 Q14;
             end
@@ -153,7 +154,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q14 : if (char_req == "i") 
+    Q14 : if (char_req == 8'h69) // i 
             begin
                 state <= #1 Q15;
             end
@@ -161,7 +162,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q15 : if (char_req == "n") 
+    Q15 : if (char_req == 8'h6E) // n 
             begin
                 state <= #1 Q16;
             end
@@ -169,7 +170,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q16 : if (char_req == "d") 
+    Q16 : if (char_req == 8'h64) // d 
             begin
                 state <= #1 Q17;
             end
@@ -177,7 +178,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q17 : if (char_req == "o") 
+    Q17 : if (char_req == 8'h6F) // o 
             begin
                 state <= #1 Q18;
             end
@@ -185,7 +186,7 @@ else
             begin
                 state <= #1 IDLE;
             end
-    Q18 : if (char_req == "w") 
+    Q18 : if (char_req == 8'h77) // w 
             begin
                 state <= #1 Q19;
             end
