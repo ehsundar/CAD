@@ -1,9 +1,11 @@
 module smart_house_function (
     input clock,
     input reset,
+    input isday,
     input music_req,
     input light_req,
     input curtain_req,
+    input ring_req,
     input [31:0]temp_req,
     input [7:0]char_req,
     output reg music,
@@ -14,9 +16,7 @@ module smart_house_function (
     output reg heater
 );
 
-reg isday, ring_req;
-
-parameter SIZE  = 20;
+parameter SIZE  = 5;
 parameter IDLE  = 5'b00001;
 parameter Init  = 5'b00010;
 parameter Q2    = 5'b00011;
@@ -39,6 +39,10 @@ parameter Q18   = 5'b10011;
 parameter Q19   = 5'b10100;
 
 reg   [SIZE-1:0] state;
+
+initial begin
+    state = IDLE;
+end
 
 always @ (posedge clock)
 begin : FSM
