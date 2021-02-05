@@ -1,13 +1,13 @@
-all: smartHouse.o CharacterRecognition.o
+all: SmartHouse.o CharacterRecognition.o
 
-smartHouse.o: smartHouse.v smartHouse_tb.v
-	iverilog -o smartHouse.o smartHouse.v smartHouse_tb.v
+SmartHouse.o: SmartHouse.v SmartHouse_tb.v
+	iverilog -o SmartHouse.o SmartHouse.v SmartHouse_tb.v
 
 CharacterRecognition.o: CharacterRecognition.v CharacterRecognition_tb.v
 	iverilog -o CharacterRecognition.o CharacterRecognition.v CharacterRecognition_tb.v
 
-test: clean smartHouse.o CharacterRecognition.o
-	vvp smartHouse.o
+test: clean SmartHouse.o CharacterRecognition.o
+	vvp SmartHouse.o
 	vvp CharacterRecognition.o
 
 clean:

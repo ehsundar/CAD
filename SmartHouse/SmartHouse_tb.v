@@ -2,25 +2,19 @@
 
 module SmartHouseTB ();
 
-reg clock, reset, isday, music_req, light_req, curtain_req, ring_req;
+reg clock, reset, isday, ring_req;
 reg signed [31:0]temp_req;
-reg [7:0]char_req;
-wire music, curtain, light, window, cooler, heater;
+wire music, curtain, light, cooler, heater;
 
 SmartHouse inst(
     clock,
     reset,
     isday,
-    music_req,
-    light_req,
-    curtain_req,
     ring_req,
     temp_req,
-    char_req,
     music,
     curtain,
     light,
-    window,
     cooler,
     heater
 );
@@ -54,28 +48,6 @@ initial begin
         $display("Assert Error: cooler must be on");
     else
         $display("Assert Correct: cooler is on");
-
-    #100;
-    if (window != 0)
-        $display("Assert Error: window must be closed");
-    else
-        $display("Assert Correct: window is closed");
-    
-    char_req = "O"; #20;
-    char_req = "P"; #20;
-    char_req = "E"; #20;
-    char_req = "N"; #20;
-    char_req = "W"; #20;
-    char_req = "I"; #20;
-    char_req = "N"; #20;
-    char_req = "D"; #20;
-    char_req = "O"; #20;
-    char_req = "W"; #20;
-
-    if (window != 1)
-        $display("Assert Error: window must be open");
-    else
-        $display("Assert Correct: window is open");
 
     #50 $finish;
 end
