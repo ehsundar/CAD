@@ -35,7 +35,19 @@ initial begin
   gas = 9;
   #10;
 
+  if (warn_gas != 1)
+    $display("Assert Error: warn_gas must be on");
+  else
+    $display("Assert Correct: warn_gas is on");
+  #20;
+
   gas = 10; 
+  #20;
+
+  if (warn_gas != 0)
+    $display("Assert Error: warn_gas must be off");
+  else
+    $display("Assert Correct: warn_gas is off");
   #20;
 
   gas = 30; 
