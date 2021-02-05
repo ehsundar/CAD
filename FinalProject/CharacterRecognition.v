@@ -1,16 +1,21 @@
-module CharacterRecognition ();
-
-input   clock, reset, string char;
-output reg start_car, heater, cooler, music;
+module CharacterRecognition (
+    input clock,
+    input reset,
+    input [7:0] char,
+    output reg start_car,
+    output reg heater,
+    output reg cooler,
+    output reg music
+);
 
 parameter SIZE  = 6;
 reg   [SIZE-1:0] state;
 
 always @ (posedge clock)
-begin: 
-if (reset == 1) 
+begin: FSM
+if (reset == 1'b1) 
     begin
-        state <= #1 8'd0;
+        state <= 8'd0;
     end 
 else
  case(state)
@@ -54,11 +59,11 @@ else
             if (char == "H")
                 state <= 8'd8;
             else if (char == "C")
-                stste <= 8'd11;
+                state <= 8'd11;
             else 
                 state <= 8'd0;
            end
-    8'd8 : if (char = "O")
+    8'd8 : if (char == "O")
                 state <= 8'd9;
             else 
                 state <= 8'd0;
@@ -83,7 +88,7 @@ else
             else 
                 state <= 8'd0;
     8'd14 : begin 
-                cooler <= 1;
+                heater <= 1;
                 state <= 8'd0;
             end
     8'd15 : if (char == "O")
@@ -144,7 +149,7 @@ else
                 state <= 8'd0;
     8'd29 : begin
                 cooler <= 0;
-                heater <= 0;
+                cooler <= 0;
                 state <= 8'd0;
             end
     8'd30 : if (char == "L")
@@ -171,16 +176,16 @@ else
                 state <= 8'd36;
             else 
                 state <= 8'd0;
-    8'd36 : if (char == "S")
+    8'd36 : if (char == "I")
                 state <= 8'd37;
             else 
                 state <= 8'd0;
-    8'd37 : if (char == "S")
+    8'd37 : if (char == "C")
                 state <= 8'd38;
             else 
                 state <= 8'd0;
     8'd38 : begin
-                music <= 0;
+                music <= 1;
                 state <= 8'd0;
             end
    default : state <= 8'd0;
