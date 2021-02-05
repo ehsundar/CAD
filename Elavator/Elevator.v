@@ -15,23 +15,21 @@ module elevator_function (
   output reg motor_down
 );
 
-// direction down = 0 , direction up = 1
-
 parameter FLOOR_COUNT = 10;
 
-reg direction;
+reg direction; // internal track of cabin direction
+reg [31:0]floor; // internal track of floor position
 
-reg floor_up_pressed[FLOOR_COUNT-1:0];
-reg floor_down_pressed[FLOOR_COUNT-1:0];
-reg cabin_pressed[FLOOR_COUNT-1:0];
-reg [7:0]count_up;
-reg [7:0]count_down;
-reg [7:0]nearest_up;
-reg [7:0]nearest_down;
+reg [FLOOR_COUNT-1:0]floor_up_pressed; // internal track of upper buttons
+reg [FLOOR_COUNT-1:0]floor_down_pressed; // internal track of lower buttons
+reg [7:0]count_up; // internal count upper buttons count
+reg [7:0]count_down; // internal count lower buttons count
+reg [7:0]nearest_up; // internal
+reg [7:0]nearest_down; // internal
 
 reg [7:0]i;
 
-parameter SIZE  = 21;
+parameter SIZE  = 5;
 parameter Off   = 5'b00001;
 parameter IDLE  = 5'b00010;
 parameter Init  = 5'b00011;
@@ -49,19 +47,36 @@ parameter Q11   = 5'b01110;
 parameter Q12   = 5'b01111;
 parameter Q13   = 5'b10000;
 parameter Q14   = 5'b10001;
-parameter Q15   = 5'b10010;
-parameter Q16   = 5'b10011;
-parameter Q17   = 5'b10100;
-parameter Q18   = 5'b10101;
 
-reg   [SIZE-1:0] state;
+reg [SIZE-1:0] state;
 
 initial begin
-    floor_up_pressed[2] = 1;
-    floor_up_pressed[5] = 1;
-    floor_up_pressed[8] = 1;
+    floor <= position;
+    direction <= 0;
+    state <= Init;
+    floor_down_pressed <= 0;
+    floor_up_pressed <= 0;
 end
 
+always @ (floor_press_event)
+begin
+    if (floor_press_event > position) begin
+        floor_up_pressed[floor_press_event] <= 1;
+    end
+    else if (floor_press_event < position) begin
+        floor_down_pressed[floor_press_event] <= 1;
+    end
+end
+
+always @ (cabin_press_event)
+begin
+    if (cabin_press_event > position) begin
+        floor_up_pressed[cabin_press_event] <= 1;
+    end
+    else if (cabin_press_event < position) begin
+        floor_down_pressed[cabin_press_event] <= 1;
+    end
+end
 
 always @ (posedge clock)
 begin : FSM
@@ -70,7 +85,7 @@ if (off_btn == 1'b1)
 else
     if (reset == 1'b1)
         state <= IDLE;
-// direction down = 0 , direction up = 1
+    // direction down = 0 , direction up = 1
     else
         case(state)
         Init : 
@@ -79,13 +94,16 @@ else
                 state <= IDLE;
             end
         IDLE: begin
+            floor <= position;
+
             count_up = 0;
             count_down = 0;
-            for (i=0; i < FLOOR_COUNT; i = i+1) begin
+            for (i = 0; i < FLOOR_COUNT; i = i+1) begin
                 if (floor_up_pressed[i] == 1)
                     count_up = count_up + 1;
                 if (floor_down_pressed[i] == 1)
                     count_down = count_down + 1;
+                    
             end
 
             nearest_up = position;
@@ -95,129 +113,135 @@ else
                 end
             end
 
-            //state <= IDLE;
+            nearest_down = position;
+            for (i = 0; i < position; i = i + 1) begin
+                if (floor_down_pressed[i]) begin
+                    nearest_down = i;
+                end
+            end
+
+            state <= Q1;
         end
-        // Q1 : if (24 <= temp <= 26)
-        //         begin
-        //             state <= #1 Q2;
-        //         end
-        //     else if (temp > 26)
-        //         begin
-        //             state <= #1 Q3;
-        //         end
-        //     else if (temp < 24)
-        //         begi
-        //             state <= #1 Q4;
-        //         end
-        // Q2 : begin
-        //         cooler <= 0;
-        //         heater <= 0;
-        //         state <= #1 Q5;
-        //     end
-        // Q3 : begin
-        //         cooler <= 1;
-        //         state <= #1 Q5;
-        //     end
-        // Q4 : begin
-        //         heater <= 1;
-        //         state <= #1 Q5;
-        //     end
-        // Q5 : if (count_up == count_down) 
-        //         begin
-        //             state <= #1 Q7;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q6;
-        //         end
-        // Q6 : if (count_up > count_down) 
-        //         begin
-        //             state <= #1 Q9;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q8;
-        //         end
-        // Q7 : if (nearest_up == nearest_down) 
-        //         begin
-        //             state <= #1 Q8;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q10;
-        //         end
-        // Q8  : begin
-        //         direction <= 0;
-        //         state <= #1 Q11;
-        //     end
-        // Q9  : begin
-        //         direction <= 1;
-        //         state <= #1 Q12;
-        //     end
-        // Q10 : if (nearest_up > nearest_down) 
-        //         begin
-        //             state <= #1 Q8;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q9;
-        //         end
-        // Q11 : begin
-        //         position = position - 1
-        //         state <= #1 Q13
-        //     end
-        // Q12 : begin
-        //         position = position + 1
-        //         state <= #1 Q14
-        //     end
-        // Q13 : if (pressed[direction][position] == 1 || destination[position] == 1) 
-        //         begin
-        //             state <= #1 Q15;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q11;
-        //         end
-        // Q14 : if (pressed[direction][position] == 1 || destination[position] == 1) 
-        //         begin
-        //             state <= #1 Q16;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q11;
-        //         end
-        // Q15 : begin
-        //         door <= 1;
-        //         pressed[direction][position] <= 0;
-        //         destination[position] <= 0;
-        //         count_down = count_down - 1;
-        //         state <= #1 Q17;
-        //     end
-        // Q16 : begin
-        //         door <= 1;
-        //         pressed[direction][position] <= 0;
-        //         destination[position] <= 0;
-        //         count_up = count_up - 1;
-        //         state <= #1 Q18;
-        //     end
-        // Q17 : if (count_down == 0) 
-        //         begin
-        //             state <= #1 IDLE;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q11;
-        //         end
-        // Q18 : if (count_up == 0) 
-        //         begin
-        //             state <= #1 IDLE;
-        //         end
-        //     else 
-        //         begin
-        //             state <= #1 Q12;
-        //         end
-        default : state <= #1 IDLE;
+
+        Q1 : if (count_up == count_down) 
+                begin
+                    if (count_up == 0)
+                        state <= IDLE;
+                    else
+                        state <= Q3;
+                end
+            else 
+                begin
+                    state <= Q2;
+                end
+
+        Q2 : if (count_up > count_down) 
+                begin
+                    state <= Q5;
+                end
+            else 
+                begin
+                    state <= Q4;
+                end
+        Q3 : if (nearest_up == nearest_down) 
+                begin
+                    state <= Q4;
+                end
+            else 
+                begin
+                    state <= Q6;
+                end
+        Q4  : begin
+                direction <= 0;
+                motor_up <= 0;
+                motor_down <= 1;
+                state <= Q7;
+            end
+        Q5  : begin
+                direction <= 1;
+                motor_up <= 1;
+                motor_down <= 0;
+                state <= Q8;
+            end
+        Q6 : if (nearest_up > nearest_down) 
+                begin
+                    state <= Q4;
+                end
+            else 
+                begin
+                    state <= Q5;
+                end
+        Q7 : begin
+                if ((floor-1) == position) begin
+                    floor <= floor - 1;
+                    state <= Q9;
+                end
+                else
+                    state <= Q7;
+            end
+        Q8 : begin
+                if ((floor+1) == position) begin
+                    floor <= floor + 1;
+                    state <= Q10;
+                end
+                else
+                    state <= Q8;
+            end
+        Q9 : if (floor_down_pressed[position] == 1)
+                begin
+                    state <= Q11;
+                end
+            else 
+                begin
+                    state <= Q7;
+                end
+        Q10 : if (floor_up_pressed[position] == 1)
+                begin
+                    state <= Q12;
+                end
+            else 
+                begin
+                    state <= Q7;
+                end
+        Q11 : begin
+                door = 1;
+                motor_down = 0;
+                motor_up = 0;
+                #2;
+                door = 0;
+
+                floor_down_pressed[position] = 0;
+                count_down = count_down - 1;
+                state = Q13;
+            end
+        Q12 : begin
+                door = 1;
+                motor_down = 0;
+                motor_up = 0;
+                #2;
+                door = 0;
+
+                floor_up_pressed[position] = 0;
+                count_up = count_up - 1;
+                state = Q14;
+            end
+        Q13 : if (count_down == 0) 
+                begin
+                    state <= IDLE;
+                end
+            else 
+                begin
+                    state <= Q4;
+                end
+        Q14 : if (count_up == 0) 
+                begin
+                    state <= IDLE;
+                end
+            else 
+                begin
+                    state <= Q5;
+                end
+        default : state <= IDLE;
         endcase
 end
-
 endmodule
