@@ -35,7 +35,19 @@ initial begin
   engine_oil = 9;
   #10;
 
+  if (warn_engine_oil != 1)
+    $display("Assert Error: warn_engine_oil must be on");
+  else
+    $display("Assert Correct: warn_engine_oil is on");
+  #20;
+
   engine_oil = 10; 
+  #20;
+
+  if (warn_engine_oil != 0)
+    $display("Assert Error: warn_engine_oil must be off");
+  else
+    $display("Assert Correct: warn_engine_oil is off");
   #20;
 
   engine_oil = 30; 
