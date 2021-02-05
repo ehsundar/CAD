@@ -35,7 +35,7 @@ initial begin
     char = "N"; #20;
     char = "D"; #20;
     char = "O"; #20;
-    char = "W"; #20;
+    char = "W"; #50;
 
     #50 $finish;
  end

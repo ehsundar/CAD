@@ -67,7 +67,13 @@ begin: FSM
         8'd9 : 
         begin
             if (char == "W")
-                window = 1;
+                state <= 8'd10;
+            else 
+                state <= 8'd0;
+        end
+        8'd10:
+        begin
+            window <= 1;
             state <= 8'd0;
         end
         default: 
