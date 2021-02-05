@@ -33,7 +33,9 @@ initial begin
   #10;
   
   if (warn_door_open != 1)
-      $display("Assert Error: warn_door_open must be on");
+    $display("Assert Error: warn_door_open must be on");
+  else
+    $display("Assert Correct: warn_door_open is on");
   #20;
 
   door_open = 0;
@@ -41,6 +43,8 @@ initial begin
 
   if (warn_door_open != 0)
     $display("Assert Error: warn_door_open must be off");
+  else
+    $display("Assert Correct: warn_door_open is off");
   #20;
 
   door_open = 1; 

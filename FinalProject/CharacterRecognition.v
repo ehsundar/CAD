@@ -1,3 +1,6 @@
+
+`timescale 1ns / 1ns
+
 module CharacterRecognition (
     input clock,
     input reset,
