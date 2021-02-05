@@ -1,4 +1,4 @@
-// `timescale 1ns / 1ps
+`timescale 1ns / 1ps
 
 module WarnEngineOilTB ();
 
@@ -14,26 +14,32 @@ WarnEngineOil1 inst(
 
 initial begin
 clock = 0;
-forever #10 clock = ~clock;
+forever #1 clock = ~clock;
 end 
 
 initial begin
-// Initialize Inputs
   $dumpfile("WarnEngineOilTest.vcd");
   $dumpvars(0, WarnEngineOilTB);
+  
   engine_oil = 0;
   reset = 1;
-  // Wait 100 ns for global reset to finish
+  
   #30;
-      reset = 0;
+  
+  reset = 0;
   #40;
+  
   engine_oil = 10;
-  #10; // wait for period 
+  #10;
+  
   engine_oil = 9;
   #10;
+
   engine_oil = 10; 
   #20;
+
   engine_oil = 30; 
+
   #500 $finish;
  end
       
