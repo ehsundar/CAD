@@ -33,6 +33,8 @@ initial begin
 
     if (music != 0)
       $display("Assert Error: music must be off");
+    else
+      $display("Assert Correct: music is off");
 
     #50 $finish;
 end
