@@ -1,10 +1,13 @@
 CC = iverilog
 FLAGS = -Wall -Winfloop
 
-all: clean WarnEngineOil.o WarnBreakOil.o WarnDoorOpen.o CharacterRecognition.o MusicOffWhenPhoneRings.o
+all: clean WarnEngineOil.o WarnBreakOil.o WarnGas.o WarnDoorOpen.o CharacterRecognition.o MusicOffWhenPhoneRings.o
 
 WarnDoorOpen.o: clean WarnDoorOpen.v WarnDoorOpenTB.v
 	$(CC) $(FLAGS) -o WarnDoorOpen.o WarnDoorOpen.v WarnDoorOpenTB.v
+
+WarnGas.o: clean WarnGas.v WarnGasTB.v
+	$(CC) $(FLAGS) -o WarnGas.o WarnGas.v WarnGasTB.v
 
 WarnBreakOil.o: clean WarnBreakOil.v WarnBreakOilTB.v
 	$(CC) $(FLAGS) -o WarnBreakOil.o WarnBreakOil.v WarnBreakOilTB.v
@@ -18,9 +21,10 @@ CharacterRecognition.o: CharacterRecognition.v CharacterRecognition_tb.v
 MusicOffWhenPhoneRings.o: MusicOffWhenPhoneRings.v MusicOffWhenPhoneRings_tb.v
 	$(CC) $(FLAGS) -o MusicOffWhenPhoneRings.o MusicOffWhenPhoneRings.v MusicOffWhenPhoneRings_tb.v
 
-test: clean WarnEngineOil.o WarnBreakOil.o WarnDoorOpen.o CharacterRecognition.o MusicOffWhenPhoneRings.o
+test: clean WarnEngineOil.o WarnBreakOil.o WarnGas.o WarnDoorOpen.o CharacterRecognition.o MusicOffWhenPhoneRings.o
 	vvp WarnEngineOil.o
 	vvp WarnBreakOil.o
+	vvp WarnGas.o
 	vvp WarnDoorOpen.o
 	vvp CharacterRecognition.o
 	vvp MusicOffWhenPhoneRings.o
