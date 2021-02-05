@@ -15,7 +15,7 @@ wire heater;
 wire motor_up;
 wire motor_down;
 
-elevator_function inst(
+Elevator inst(
   clock,
   reset,
   off_btn,

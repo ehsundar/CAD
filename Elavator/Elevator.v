@@ -1,6 +1,6 @@
 `timescale 1ns / 1ns
 
-module elevator_function (
+module Elevator (
   input clock,
   input reset,
   input off_btn,
