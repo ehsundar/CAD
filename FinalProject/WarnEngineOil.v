@@ -1,4 +1,6 @@
-module WarnEngineOil1 (clock, reset, engine_oil, warn_engine_oil);
+`timescale 1ns / 1ps
+
+module WarnEngineOil (clock, reset, engine_oil, warn_engine_oil);
 
 input clock;
 input reset;
