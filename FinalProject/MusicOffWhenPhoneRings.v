@@ -2,42 +2,51 @@ module MusicOffWhenPhoneRings (
     input clock,
     input reset,
     input is_ringing,
+    input is_playing,
     output reg music
 );
 
 parameter SIZE  = 2;
 reg [SIZE-1:0] state;
 
+parameter Q0_Init = 8'd0;
+parameter Q1_MusicOff = 8'd1;
+parameter Q2_MusicResume = 8'd2;
+
+initial begin
+    music = 1;
+end
+
 always @ (posedge clock)
 begin: MusicFSM 
     if (reset == 1) 
         begin
-            state <= #1 8'd0;
+            state <= #1 Q0_Init;
         end 
     else
         case(state)
-            8'd0: 
+            Q0_Init: 
             begin
-                if (music == 1 and is_rining == 1)
-                state <= 8'd1;
+                if ((is_playing == 1) && (is_ringing == 1))
+                    state <= Q1_MusicOff;
                 else 
-                state <= 8'd0; 
+                    state <= Q0_Init; 
             end
-            8'd1:
+            Q1_MusicOff:
             begin
                 music <= 0;
-                if (chais_ringing == 0)
-                    state <= 8'd2;
+                if (is_ringing == 0)
+                    state <= Q2_MusicResume;
                 else 
-                    state <= 8'd1;
+                    state <= Q1_MusicOff;
             end
-            8'd2: 
+            Q2_MusicResume: 
             begin
                 music <= 1;
-                state <= 8'd0;
+                state <= Q0_Init;
             end
             default:
-                state <= 8'd0;
+                state <= Q0_Init;
         endcase
 end
 
