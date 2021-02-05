@@ -19,7 +19,7 @@ end
 
 initial begin
 // Initialize Inputs
-  $dumpfile("test.vcd");
+  $dumpfile("WarnEngineOilTest.vcd");
   $dumpvars(0, WarnEngineOilTB);
   engine_oil = 0;
   reset = 1;
