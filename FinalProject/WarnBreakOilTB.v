@@ -35,7 +35,19 @@ initial begin
   break_oil = 9;
   #10;
 
+  if (warn_break_oil != 1)
+    $display("Assert Error: warn_break_oil must be on");
+  else
+    $display("Assert Correct: warn_break_oil is on");
+  #20;
+
   break_oil = 10; 
+  #20;
+
+  if (warn_break_oil != 0)
+    $display("Assert Error: warn_break_oil must be off");
+  else
+    $display("Assert Correct: warn_break_oil is off");
   #20;
 
   break_oil = 30; 
