@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module WarnBreakOil1 (clock, reset, break_oil, warn_break_oil);
+module WarnBreakOil (clock, reset, break_oil, warn_break_oil);
 
 input clock;
 input reset;

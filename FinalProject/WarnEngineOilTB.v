@@ -6,7 +6,7 @@ reg clock, reset;
 reg signed [31:0] engine_oil;
 wire warn_engine_oil;
 
-WarnEngineOil1 inst(
+WarnEngineOil inst(
   clock, 
   reset, 
   engine_oil, 
