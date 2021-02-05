@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
 module WarnDoorOpen (clock, reset, door_open, warn_door_open);
 

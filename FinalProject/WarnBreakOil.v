@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
 module WarnBreakOil (clock, reset, break_oil, warn_break_oil);
 
