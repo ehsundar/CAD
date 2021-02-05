@@ -1,6 +1,6 @@
 `timescale 1ns / 1ns
 
-module CharacterRecognitionTB ();
+module ElevatorTB ();
 
 reg clock;
 reg reset;
@@ -32,22 +32,29 @@ elevator_function inst(
 
 initial begin
 clock = 0;
-forever #10 clock = ~clock;
+forever #1 clock = ~clock;
 end 
 
 initial begin
 // Initialize Inputs
-  $dumpfile("CharacterRecognitionTB.vcd");
-  $dumpvars(0, CharacterRecognitionTB);
+  $dumpfile("ElevatorTB.vcd");
+  $dumpvars(0, ElevatorTB);
 
   reset = 1;
   off_btn = 0;
-  #30;
+  #10;
 
   reset = 0;
+  position = 1;
+  #10
 
+  cabin_press_event = 2;
+  #5;
 
-  #500 $finish;
+  position = 2;
+  #5;
+
+  #50 $finish;
  end
 
 endmodule
